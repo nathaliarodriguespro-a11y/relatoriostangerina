@@ -1,0 +1,984 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --pink: #E1306C;
+    --pink-light: #fce4ec;
+    --pink-dark: #ad1457;
+    --purple: #833AB4;
+    --orange: #F77737;
+    --gold: #FCAF45;
+    --bg: #f8f7f5;
+    --card: #ffffff;
+    --text: #1a1a2e;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --success: #10b981;
+    --warn: #f59e0b;
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .app {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    min-height: 100vh;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    background: linear-gradient(160deg, #1a1a2e 0%, #16213e 100%);
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 8px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    margin-bottom: 8px;
+  }
+
+  .logo-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--gold), var(--pink), var(--purple));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .logo-text {
+    font-family: 'DM Serif Display', serif;
+    font-size: 16px;
+    color: white;
+    line-height: 1.1;
+  }
+  .logo-text span { font-family: 'DM Sans', sans-serif; font-size: 10px; color: rgba(255,255,255,0.4); display: block; font-weight: 300; letter-spacing: 0.05em; }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    color: rgba(255,255,255,0.55);
+    font-size: 13px;
+    font-weight: 400;
+    transition: all 0.18s;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+  }
+
+  .nav-item:hover { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.85); }
+  .nav-item.active { background: rgba(225,48,108,0.18); color: #f48fb1; }
+  .nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
+
+  .nav-section { font-size: 10px; color: rgba(255,255,255,0.25); letter-spacing: 0.1em; text-transform: uppercase; padding: 16px 12px 6px; font-weight: 500; }
+
+  /* Main */
+  .main { display: flex; flex-direction: column; overflow: hidden; }
+
+  .topbar {
+    background: white;
+    border-bottom: 1px solid var(--border);
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  .topbar-title { font-size: 16px; font-weight: 500; color: var(--text); }
+  .topbar-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
+
+  .topbar-actions { display: flex; gap: 10px; align-items: center; }
+
+  .btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.18s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--pink), var(--purple));
+    color: white;
+  }
+  .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  .btn-secondary {
+    background: white;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { background: var(--bg); }
+
+  .content { flex: 1; overflow-y: auto; padding: 28px; }
+
+  /* Cards */
+  .card {
+    background: white;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 22px 24px;
+    margin-bottom: 20px;
+  }
+
+  .card-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-title .badge {
+    font-size: 10px;
+    background: var(--pink-light);
+    color: var(--pink);
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+
+  /* Grid stats */
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+
+  .stat-card {
+    background: white;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .stat-card.pink::before { background: linear-gradient(90deg, var(--pink), var(--gold)); }
+  .stat-card.purple::before { background: linear-gradient(90deg, var(--purple), #1DA1F2); }
+  .stat-card.green::before { background: linear-gradient(90deg, var(--success), #34d399); }
+  .stat-card.orange::before { background: linear-gradient(90deg, var(--orange), var(--gold)); }
+
+  .stat-label { font-size: 11px; color: var(--muted); font-weight: 400; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .stat-value { font-size: 24px; font-weight: 600; color: var(--text); line-height: 1; }
+  .stat-change { font-size: 11px; margin-top: 6px; display: flex; align-items: center; gap: 3px; }
+  .stat-change.up { color: var(--success); }
+  .stat-change.down { color: #ef4444; }
+
+  /* Form */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-group.full { grid-column: 1 / -1; }
+
+  label { font-size: 12px; font-weight: 500; color: var(--muted); letter-spacing: 0.03em; }
+
+  input, select, textarea {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    background: white;
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+  }
+
+  input:focus, select:focus, textarea:focus { border-color: var(--pink); }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 4px; margin-bottom: 20px; background: var(--bg); padding: 4px; border-radius: 10px; width: fit-content; }
+
+  .tab {
+    padding: 7px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    border: none;
+    background: none;
+    transition: all 0.18s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .tab.active { background: white; color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+
+  /* Chart bar */
+  .bar-chart { display: flex; flex-direction: column; gap: 10px; }
+  .bar-row { display: flex; align-items: center; gap: 10px; }
+  .bar-label { font-size: 12px; color: var(--muted); width: 80px; flex-shrink: 0; }
+  .bar-track { flex: 1; height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; transition: width 1s ease; }
+  .bar-fill.pink { background: linear-gradient(90deg, var(--pink), var(--gold)); }
+  .bar-fill.purple { background: linear-gradient(90deg, var(--purple), #c084fc); }
+  .bar-fill.blue { background: linear-gradient(90deg, #1DA1F2, #60a5fa); }
+  .bar-fill.green { background: linear(90deg, var(--success), #34d399); background: linear-gradient(90deg, var(--success), #34d399); }
+  .bar-val { font-size: 12px; font-weight: 500; width: 50px; text-align: right; }
+
+  /* Insights */
+  .insight-item {
+    display: flex;
+    gap: 12px;
+    padding: 14px;
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    margin-bottom: 10px;
+    align-items: flex-start;
+  }
+  .insight-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .insight-text { font-size: 13px; color: var(--text); line-height: 1.5; }
+  .insight-tag { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 20px; display: inline-block; margin-top: 4px; }
+  .tag-up { background: #d1fae5; color: #065f46; }
+  .tag-warn { background: #fef3c7; color: #92400e; }
+  .tag-info { background: #ede9fe; color: #5b21b6; }
+
+  /* Client list */
+  .client-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .client-row:last-child { border-bottom: none; }
+  .client-row:hover { background: var(--bg); margin: 0 -24px; padding: 12px 24px; border-radius: 8px; }
+
+  .client-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--pink), var(--purple));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .client-info { flex: 1; }
+  .client-name { font-size: 13px; font-weight: 500; }
+  .client-handle { font-size: 11px; color: var(--muted); }
+  .client-status { font-size: 10px; padding: 3px 10px; border-radius: 20px; background: #d1fae5; color: #065f46; font-weight: 500; }
+  .client-status.pending { background: #fef3c7; color: #92400e; }
+
+  /* Report preview */
+  .report-preview {
+    background: white;
+    border-radius: var(--radius);
+    border: 2px solid var(--border);
+    overflow: hidden;
+  }
+
+  .report-header {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    padding: 28px 32px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .report-client { font-size: 22px; font-family: 'DM Serif Display', serif; }
+  .report-period { font-size: 12px; opacity: 0.55; margin-top: 4px; }
+  .report-logo { font-size: 11px; opacity: 0.4; text-align: right; }
+
+  .report-body { padding: 28px 32px; }
+  .report-section { margin-bottom: 24px; }
+  .report-section-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--pink);
+    border-left: 3px solid var(--pink);
+    padding-left: 10px;
+    margin-bottom: 14px;
+  }
+  .report-text { font-size: 13px; color: #374151; line-height: 1.7; }
+
+  /* Page views */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* Notification */
+  .notif {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #1a1a2e;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 13px;
+    transform: translateY(60px);
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 100;
+  }
+  .notif.show { transform: translateY(0); opacity: 1; }
+
+  .ai-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    background: linear-gradient(135deg, var(--pink), var(--purple));
+    color: white;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+
+  .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: inline-block;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.9);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius);
+    z-index: 10;
+    flex-direction: column;
+    gap: 14px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .loading-overlay.show { display: flex; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+  .period-selector {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+
+  .period-btn {
+    padding: 5px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: white;
+    font-size: 11px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--muted);
+    transition: all 0.15s;
+  }
+
+  .period-btn.active {
+    background: var(--pink);
+    border-color: var(--pink);
+    color: white;
+  }
+
+  .mini-bar {
+    display: flex;
+    gap: 4px;
+    align-items: flex-end;
+    height: 50px;
+    margin-top: 10px;
+  }
+
+  .mini-bar-item {
+    flex: 1;
+    border-radius: 3px 3px 0 0;
+    background: linear-gradient(to top, var(--pink), var(--gold));
+    min-height: 4px;
+    opacity: 0.85;
+    transition: opacity 0.2s;
+  }
+  .mini-bar-item:hover { opacity: 1; }
+
+  .content-type-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 14px;
+  }
+
+  .content-type-card {
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    text-align: center;
+  }
+
+  .content-type-icon { font-size: 22px; margin-bottom: 6px; }
+  .content-type-name { font-size: 11px; color: var(--muted); font-weight: 500; }
+  .content-type-pct { font-size: 18px; font-weight: 600; margin-top: 2px; }
+
+  .step-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 28px;
+  }
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .step.active { color: var(--pink); }
+  .step.done { color: var(--success); }
+  .step-num {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 500;
+  }
+  .step.active .step-num { border-color: var(--pink); color: var(--pink); background: var(--pink-light); }
+  .step.done .step-num { border-color: var(--success); background: #d1fae5; color: var(--success); }
+  .step-line { flex: 1; height: 1px; background: var(--border); margin: 0 8px; }
+  .step-line.done { background: var(--success); }
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">📊</div>
+      <div class="logo-text">InsightReport<span>Social Media Pro</span></div>
+    </div>
+
+    <div class="nav-section">Menu</div>
+    <button class="nav-item active" onclick="showView('dashboard')"><span class="icon">⊞</span> Dashboard</button>
+    <button class="nav-item" onclick="showView('clients')"><span class="icon">👥</span> Clientes</button>
+    <button class="nav-item" onclick="showView('new-report')"><span class="icon">✦</span> Novo relatório</button>
+    <button class="nav-item" onclick="showView('history')"><span class="icon">🕐</span> Histórico</button>
+
+    <div class="nav-section" style="margin-top: auto;">Conta</div>
+    <button class="nav-item"><span class="icon">⚙</span> Configurações</button>
+    <button class="nav-item"><span class="icon">?</span> Ajuda</button>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title" id="topbar-title">Dashboard</div>
+        <div class="topbar-sub" id="topbar-sub">Visão geral dos seus clientes</div>
+      </div>
+      <div class="topbar-actions">
+        <div class="ai-badge">✦ IA ativa</div>
+        <button class="btn btn-primary" onclick="showView('new-report')">+ Novo relatório</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- DASHBOARD VIEW -->
+      <div class="view active" id="view-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card pink">
+            <div class="stat-label">Total de clientes</div>
+            <div class="stat-value">8</div>
+            <div class="stat-change up">↑ 2 este mês</div>
+          </div>
+          <div class="stat-card purple">
+            <div class="stat-label">Relatórios gerados</div>
+            <div class="stat-value">34</div>
+            <div class="stat-change up">↑ 12 este mês</div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-label">Engaj. médio</div>
+            <div class="stat-value">4,7%</div>
+            <div class="stat-change up">↑ 0,8% vs período anterior</div>
+          </div>
+          <div class="stat-card orange">
+            <div class="stat-label">Tempo médio/relatório</div>
+            <div class="stat-value">4 min</div>
+            <div class="stat-change up">↓ 18 min economizados</div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="card">
+            <div class="card-title">Clientes recentes</div>
+            <div class="client-row">
+              <div class="client-avatar">BF</div>
+              <div class="client-info">
+                <div class="client-name">Bella Floricultura</div>
+                <div class="client-handle">@bellafloricultura</div>
+              </div>
+              <div class="client-status">Relatório pronto</div>
+            </div>
+            <div class="client-row">
+              <div class="client-avatar" style="background: linear-gradient(135deg,#F77737,#FCAF45);">NS</div>
+              <div class="client-info">
+                <div class="client-name">NutriSaúde Clinic</div>
+                <div class="client-handle">@nutrisaudeclinic</div>
+              </div>
+              <div class="client-status pending">Aguardando dados</div>
+            </div>
+            <div class="client-row">
+              <div class="client-avatar" style="background: linear-gradient(135deg,#833AB4,#1DA1F2);">MC</div>
+              <div class="client-info">
+                <div class="client-name">Moda Casa Decor</div>
+                <div class="client-handle">@modacasadecor</div>
+              </div>
+              <div class="client-status">Relatório pronto</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Engajamento por cliente <span class="badge">este mês</span></div>
+            <div class="bar-chart" style="margin-top: 4px;">
+              <div class="bar-row">
+                <div class="bar-label">Bella Flor</div>
+                <div class="bar-track"><div class="bar-fill pink" style="width: 78%"></div></div>
+                <div class="bar-val">5,8%</div>
+              </div>
+              <div class="bar-row">
+                <div class="bar-label">NutriSaúde</div>
+                <div class="bar-track"><div class="bar-fill purple" style="width: 58%"></div></div>
+                <div class="bar-val">4,3%</div>
+              </div>
+              <div class="bar-row">
+                <div class="bar-label">Moda Casa</div>
+                <div class="bar-track"><div class="bar-fill blue" style="width: 48%"></div></div>
+                <div class="bar-val">3,6%</div>
+              </div>
+              <div class="bar-row">
+                <div class="bar-label">Outros</div>
+                <div class="bar-track"><div class="bar-fill green" style="width: 38%"></div></div>
+                <div class="bar-val">2,9%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CLIENTS VIEW -->
+      <div class="view" id="view-clients">
+        <div class="card">
+          <div class="card-title">Cadastrar novo cliente</div>
+          <div class="form-grid" style="margin-bottom: 16px;">
+            <div class="form-group">
+              <label>Nome da empresa</label>
+              <input type="text" placeholder="Ex: Bella Floricultura" id="client-name">
+            </div>
+            <div class="form-group">
+              <label>@ do Instagram</label>
+              <input type="text" placeholder="@usuario">
+            </div>
+            <div class="form-group">
+              <label>Segmento</label>
+              <select>
+                <option>Alimentação e Saúde</option>
+                <option>Moda e Beleza</option>
+                <option>Casa e Decoração</option>
+                <option>Serviços</option>
+                <option>Educação</option>
+                <option>Fitness</option>
+                <option>Outro</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Cor da marca (opcional)</label>
+              <input type="text" placeholder="#E1306C">
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="showNotif('✓ Cliente cadastrado com sucesso!')">Cadastrar cliente</button>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Clientes cadastrados</div>
+          <div class="client-row">
+            <div class="client-avatar">BF</div>
+            <div class="client-info"><div class="client-name">Bella Floricultura</div><div class="client-handle">@bellafloricultura · Varejo</div></div>
+            <div class="client-status">Ativo</div>
+          </div>
+          <div class="client-row">
+            <div class="client-avatar" style="background: linear-gradient(135deg,#F77737,#FCAF45);">NS</div>
+            <div class="client-info"><div class="client-name">NutriSaúde Clinic</div><div class="client-handle">@nutrisaudeclinic · Saúde</div></div>
+            <div class="client-status">Ativo</div>
+          </div>
+          <div class="client-row">
+            <div class="client-avatar" style="background: linear-gradient(135deg,#833AB4,#1DA1F2);">MC</div>
+            <div class="client-info"><div class="client-name">Moda Casa Decor</div><div class="client-handle">@modacasadecor · Decoração</div></div>
+            <div class="client-status">Ativo</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NEW REPORT VIEW -->
+      <div class="view" id="view-new-report">
+        <div class="step-indicator">
+          <div class="step done" id="step1"><div class="step-num">✓</div> <span>Cliente</span></div>
+          <div class="step-line done"></div>
+          <div class="step active" id="step2"><div class="step-num">2</div> <span>Dados</span></div>
+          <div class="step-line" id="line2"></div>
+          <div class="step" id="step3"><div class="step-num">3</div> <span>Análise IA</span></div>
+          <div class="step-line" id="line3"></div>
+          <div class="step" id="step4"><div class="step-num">4</div> <span>Relatório</span></div>
+        </div>
+
+        <div class="card" id="data-form-card" style="position: relative;">
+          <div class="loading-overlay" id="ai-loading">
+            <div class="spinner" style="width:28px;height:28px;border-width:3px;border-color:rgba(225,48,108,0.2);border-top-color:var(--pink);"></div>
+            <div style="font-weight: 500; color: var(--text);">IA analisando os dados...</div>
+            <div style="font-size: 12px;">Gerando insights estratégicos</div>
+          </div>
+
+          <div class="card-title">
+            Inserir dados do período
+            <span class="badge">Bella Floricultura · Março 2025</span>
+          </div>
+
+          <div style="margin-bottom: 18px;">
+            <div class="tabs">
+              <button class="tab active" onclick="switchTab(this)">Alcance & Impressões</button>
+              <button class="tab" onclick="switchTab(this)">Engajamento</button>
+              <button class="tab" onclick="switchTab(this)">Conteúdo</button>
+              <button class="tab" onclick="switchTab(this)">Crescimento</button>
+            </div>
+
+            <div class="form-grid-3">
+              <div class="form-group">
+                <label>Alcance total</label>
+                <input type="number" placeholder="Ex: 45200" id="inp-alcance">
+              </div>
+              <div class="form-group">
+                <label>Impressões</label>
+                <input type="number" placeholder="Ex: 128000">
+              </div>
+              <div class="form-group">
+                <label>Alcance anterior</label>
+                <input type="number" placeholder="Ex: 38400">
+              </div>
+              <div class="form-group">
+                <label>Curtidas</label>
+                <input type="number" placeholder="Ex: 3200" id="inp-curtidas">
+              </div>
+              <div class="form-group">
+                <label>Comentários</label>
+                <input type="number" placeholder="Ex: 284">
+              </div>
+              <div class="form-group">
+                <label>Compartilhamentos</label>
+                <input type="number" placeholder="Ex: 152">
+              </div>
+              <div class="form-group">
+                <label>Salvamentos</label>
+                <input type="number" placeholder="Ex: 420">
+              </div>
+              <div class="form-group">
+                <label>Seguidores novos</label>
+                <input type="number" placeholder="Ex: 312">
+              </div>
+              <div class="form-group">
+                <label>Total de seguidores</label>
+                <input type="number" placeholder="Ex: 8754">
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 18px;">
+            <div style="font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 12px;">POSTS DO PERÍODO</div>
+            <div class="form-grid-3">
+              <div class="form-group">
+                <label>Posts no feed</label>
+                <input type="number" placeholder="Ex: 8">
+              </div>
+              <div class="form-group">
+                <label>Reels publicados</label>
+                <input type="number" placeholder="Ex: 12" id="inp-reels">
+              </div>
+              <div class="form-group">
+                <label>Stories (média diária)</label>
+                <input type="number" placeholder="Ex: 4">
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <button class="btn btn-primary" onclick="generateReport()">✦ Gerar análise com IA</button>
+            <button class="btn btn-secondary">Usar dados de exemplo</button>
+            <div style="font-size: 11px; color: var(--muted); margin-left: auto;">A IA vai interpretar os dados e gerar textos estratégicos automaticamente</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HISTORY VIEW -->
+      <div class="view" id="view-history">
+        <div class="card">
+          <div class="card-title">Histórico de relatórios</div>
+          <div style="margin-bottom: 16px;">
+            <select style="width: 200px;">
+              <option>Todos os clientes</option>
+              <option>Bella Floricultura</option>
+              <option>NutriSaúde Clinic</option>
+            </select>
+          </div>
+
+          <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr style="border-bottom: 1px solid var(--border);">
+                <th style="text-align: left; font-size: 11px; color: var(--muted); font-weight: 500; padding: 8px 0; letter-spacing: 0.05em;">CLIENTE</th>
+                <th style="text-align: left; font-size: 11px; color: var(--muted); font-weight: 500; padding: 8px 0; letter-spacing: 0.05em;">PERÍODO</th>
+                <th style="text-align: left; font-size: 11px; color: var(--muted); font-weight: 500; padding: 8px 0; letter-spacing: 0.05em;">ENGAJ.</th>
+                <th style="text-align: left; font-size: 11px; color: var(--muted); font-weight: 500; padding: 8px 0; letter-spacing: 0.05em;">STATUS</th>
+                <th style="text-align: left; font-size: 11px; color: var(--muted); font-weight: 500; padding: 8px 0; letter-spacing: 0.05em;">AÇÕES</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 12px 0; font-size: 13px; font-weight: 500;">Bella Floricultura</td>
+                <td style="padding: 12px 0; font-size: 13px; color: var(--muted);">Mar 2025</td>
+                <td style="padding: 12px 0; font-size: 13px; color: var(--success); font-weight: 500;">5,8%</td>
+                <td style="padding: 12px 0;"><span class="client-status" style="display:inline-block;">Enviado</span></td>
+                <td style="padding: 12px 0;"><button class="btn btn-secondary" style="padding: 5px 12px; font-size: 11px;" onclick="showView('report-preview')">Ver relatório</button></td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 12px 0; font-size: 13px; font-weight: 500;">Moda Casa Decor</td>
+                <td style="padding: 12px 0; font-size: 13px; color: var(--muted);">Mar 2025</td>
+                <td style="padding: 12px 0; font-size: 13px; color: var(--success); font-weight: 500;">3,6%</td>
+                <td style="padding: 12px 0;"><span class="client-status" style="display:inline-block;">Enviado</span></td>
+                <td style="padding: 12px 0;"><button class="btn btn-secondary" style="padding: 5px 12px; font-size: 11px;">Ver relatório</button></td>
+              </tr>
+              <tr>
+                <td style="padding: 12px 0; font-size: 13px; font-weight: 500;">Bella Floricultura</td>
+                <td style="padding: 12px 0; font-size: 13px; color: var(--muted);">Fev 2025</td>
+                <td style="padding: 12px 0; font-size: 13px; color: var(--warn); font-weight: 500;">4,1%</td>
+                <td style="padding: 12px 0;"><span class="client-status" style="display:inline-block;">Arquivado</span></td>
+                <td style="padding: 12px 0;"><button class="btn btn-secondary" style="padding: 5px 12px; font-size: 11px;">Ver relatório</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- REPORT PREVIEW VIEW -->
+      <div class="view" id="view-report-preview">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <div>
+            <div style="font-size: 15px; font-weight: 500;">Relatório gerado com IA</div>
+            <div style="font-size: 12px; color: var(--muted);">Bella Floricultura · Março 2025</div>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <button class="btn btn-secondary">✉ Copiar link</button>
+            <button class="btn btn-primary" onclick="showNotif('✓ PDF exportado! Pronto para enviar ao cliente.')">⬇ Exportar PDF</button>
+          </div>
+        </div>
+
+        <div class="report-preview">
+          <div class="report-header">
+            <div>
+              <div style="font-size: 11px; opacity: 0.4; letter-spacing: 0.1em; margin-bottom: 8px;">RELATÓRIO DE DESEMPENHO</div>
+              <div class="report-client">Bella Floricultura</div>
+              <div class="report-period">@bellafloricultura · Março 2025</div>
+            </div>
+            <div class="report-logo">
+              Gerado por InsightReport<br>
+              <span style="font-size: 10px;">via IA ✦</span>
+            </div>
+          </div>
+
+          <div class="report-body">
+            <div class="stats-grid" style="margin-bottom: 24px;">
+              <div class="stat-card pink" style="border-radius: 10px;">
+                <div class="stat-label">Alcance</div>
+                <div class="stat-value" style="font-size: 20px;">45,2K</div>
+                <div class="stat-change up">↑ 17,7%</div>
+              </div>
+              <div class="stat-card purple" style="border-radius: 10px;">
+                <div class="stat-label">Engajamento</div>
+                <div class="stat-value" style="font-size: 20px;">5,8%</div>
+                <div class="stat-change up">↑ 0,9p.p.</div>
+              </div>
+              <div class="stat-card green" style="border-radius: 10px;">
+                <div class="stat-label">Novos seguidores</div>
+                <div class="stat-value" style="font-size: 20px;">+312</div>
+                <div class="stat-change up">↑ 23%</div>
+              </div>
+              <div class="stat-card orange" style="border-radius: 10px;">
+                <div class="stat-label">Salvamentos</div>
+                <div class="stat-value" style="font-size: 20px;">420</div>
+                <div class="stat-change up">↑ 38%</div>
+              </div>
+            </div>
+
+            <div class="report-section">
+              <div class="report-section-title">✦ Análise gerada por IA</div>
+              <div class="report-text" id="ai-analysis-text">
+                Março foi um mês de <strong>crescimento sólido e consistente</strong> para o @bellafloricultura. O alcance cresceu 17,7% em relação ao período anterior, reflexo direto da estratégia de Reels adotada — o formato respondeu por 68% do alcance total, confirmando o acerto na priorização desse tipo de conteúdo.<br><br>
+                O dado mais estratégico do mês é o <strong>aumento de 38% nos salvamentos</strong>. Isso indica que o conteúdo tem gerado valor real para o público — pessoas que salvam, geralmente, são potenciais compradores que estão pesquisando antes de decidir. Este é um sinal de audiência qualificada.<br><br>
+                O crescimento de seguidores (+312) acompanha a tendência positiva, com uma taxa de crescimento de 3,7% — acima da média para o segmento de varejo floral, que gira em torno de 2,1%.
+              </div>
+            </div>
+
+            <div class="report-section">
+              <div class="report-section-title">📊 Desempenho por tipo de conteúdo</div>
+              <div class="content-type-grid">
+                <div class="content-type-card">
+                  <div class="content-type-icon">🎬</div>
+                  <div class="content-type-name">Reels</div>
+                  <div class="content-type-pct" style="color: var(--pink);">68%</div>
+                  <div style="font-size: 10px; color: var(--muted); margin-top: 2px;">do alcance</div>
+                </div>
+                <div class="content-type-card">
+                  <div class="content-type-icon">🖼</div>
+                  <div class="content-type-name">Feed</div>
+                  <div class="content-type-pct" style="color: var(--purple);">22%</div>
+                  <div style="font-size: 10px; color: var(--muted); margin-top: 2px;">do alcance</div>
+                </div>
+                <div class="content-type-card">
+                  <div class="content-type-icon">📱</div>
+                  <div class="content-type-name">Stories</div>
+                  <div class="content-type-pct" style="color: var(--orange);">10%</div>
+                  <div style="font-size: 10px; color: var(--muted); margin-top: 2px;">do alcance</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="report-section">
+              <div class="report-section-title">🎯 Recomendações estratégicas</div>
+              <div class="insight-item">
+                <div class="insight-icon">🚀</div>
+                <div>
+                  <div class="insight-text"><strong>Aumentar frequência de Reels:</strong> O formato está performando muito acima da média. Recomendamos passar de 3 para 5 Reels por semana, priorizando conteúdos de bastidores e dicas rápidas de flores.</div>
+                  <div class="insight-tag tag-up">Alto impacto</div>
+                </div>
+              </div>
+              <div class="insight-item">
+                <div class="insight-icon">💡</div>
+                <div>
+                  <div class="insight-text"><strong>Aproveitar o pico de salvamentos:</strong> Crie uma série de posts "guia" (ex: "Como cuidar de orquídeas") — conteúdo educativo tende a gerar 2-3x mais salvamentos e posiciona a marca como autoridade.</div>
+                  <div class="insight-tag tag-info">Estratégia de conteúdo</div>
+                </div>
+              </div>
+              <div class="insight-item">
+                <div class="insight-icon">⚠</div>
+                <div>
+                  <div class="insight-text"><strong>Stories precisam de atenção:</strong> Com apenas 10% do alcance, os stories estão abaixo do potencial. Teste enquetes, contagens regressivas e stickers interativos para aumentar o engajamento nesse formato.</div>
+                  <div class="insight-tag tag-warn">Ponto de melhoria</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 16px; font-size: 12px; color: var(--muted);">
+          Relatório gerado automaticamente com IA · InsightReport Pro
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="notif" id="notif"></div>
+
+<script>
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + id).classList.add('active');
+
+  const titles = {
+    'dashboard': ['Dashboard', 'Visão geral dos seus clientes'],
+    'clients': ['Clientes', 'Gerencie seus clientes'],
+    'new-report': ['Novo relatório', 'Insira os dados e gere análise com IA'],
+    'history': ['Histórico', 'Todos os relatórios gerados'],
+    'report-preview': ['Visualizar relatório', 'Bella Floricultura · Março 2025']
+  };
+
+  if (titles[id]) {
+    document.getElementById('topbar-title').textContent = titles[id][0];
+    document.getElementById('topbar-sub').textContent = titles[id][1];
+  }
+
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const map = { dashboard: 0, clients: 1, 'new-report': 2, history: 3 };
+  const navItems = document.querySelectorAll('.nav-item');
+  if (map[id] !== undefined) navItems[map[id]].classList.add('active');
+}
+
+function switchTab(el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function generateReport() {
+  const loading = document.getElementById('ai-loading');
+  loading.classList.add('show');
+
+  setTimeout(() => {
+    loading.classList.remove('show');
+    showNotif('✓ Análise completa! Relatório pronto.');
+    setTimeout(() => showView('report-preview'), 800);
+  }, 2800);
+}
+
+function showNotif(msg) {
+  const n = document.getElementById('notif');
+  n.textContent = msg;
+  n.classList.add('show');
+  setTimeout(() => n.classList.remove('show'), 3500);
+}
+</script>
+</body>
+</html>
